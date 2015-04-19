@@ -5,12 +5,14 @@
 Summary:	Tools to manage UEFI variables
 Summary(pl.UTF-8):	Narzędzia do zarządzania zmiennymi UEFI
 Name:		efivar
-Version:	0.15
+Version:	0.17
+# unfortunately the last tagged version is 0.15; for later, look changelog of dp branch
+%define	gitref	a49b223a42e07989f775aca55eb7f2e9d1b6e82b
 Release:	1
 License:	LGPL v2.1
 Group:		Applications/System
-Source0:	https://github.com/rhinstaller/efivar/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	23ecc021d79977e9fcf851bdba889aa0
+Source0:	https://github.com/rhinstaller/efivar/archive/%{gitref}/%{name}-%{version}.tar.gz
+# Source0-md5:	390dd8192e288116fc17597fbe4baef4
 URL:		https://github.com/rhinstaller/efivar
 BuildRequires:	popt-devel
 Requires:	%{name}-libs = %{version}-%{release}
@@ -61,7 +63,7 @@ Static efivar library.
 Statyczna biblioteka efivar.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{gitref}
 
 %build
 %{__make} \
@@ -97,8 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libefivar.so
-%{_includedir}/efivar.h
-%{_includedir}/efivar-guids.h
+%{_includedir}/efivar
 %{_pkgconfigdir}/efivar.pc
 %{_mandir}/man3/efi_*.3*
 
