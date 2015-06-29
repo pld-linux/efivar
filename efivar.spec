@@ -5,14 +5,13 @@
 Summary:	Tools to manage UEFI variables
 Summary(pl.UTF-8):	Narzędzia do zarządzania zmiennymi UEFI
 Name:		efivar
-Version:	0.17
-# unfortunately the last tagged version is 0.15; for later, look changelog of dp branch
-%define	gitref	a49b223a42e07989f775aca55eb7f2e9d1b6e82b
+Version:	0.20
 Release:	1
 License:	LGPL v2.1
 Group:		Applications/System
-Source0:	https://github.com/rhinstaller/efivar/archive/%{gitref}/%{name}-%{version}.tar.gz
-# Source0-md5:	390dd8192e288116fc17597fbe4baef4
+Source0:	https://github.com/rhinstaller/efivar/archive/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	2982f1e1df35f214c17288137f15312f
+Patch0:		%{name}-link.patch
 URL:		https://github.com/rhinstaller/efivar
 BuildRequires:	popt-devel
 Requires:	%{name}-libs = %{version}-%{release}
@@ -63,13 +62,14 @@ Static efivar library.
 Statyczna biblioteka efivar.
 
 %prep
-%setup -q -n %{name}-%{gitref}
+%setup -q
+%patch0 -p1
 
 %build
 %{__make} \
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags}" \
-	%{?with_static_libs:LIBTARGETS="libefivar.so.0 libefivar.a"} \
+	%{?with_static_libs:LIBTARGETS="libefivar.so.0 libefiboot.so.0 libefivar.a libefiboot.a"} \
 	libdir=%{_libdir}
 
 %install
@@ -77,7 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	%{?with_static_libs:LIBTARGETS="libefivar.so.0 libefivar.a"} \
+	%{?with_static_libs:LIBTARGETS="libefivar.so.0 libefiboot.so.0 libefivar.a libefiboot.a"} \
 	libdir=%{_libdir}
 
 %clean
@@ -94,17 +94,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files libs
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libefiboot.so.0
 %attr(755,root,root) %{_libdir}/libefivar.so.0
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libefiboot.so
 %attr(755,root,root) %{_libdir}/libefivar.so
 %{_includedir}/efivar
+%{_pkgconfigdir}/efiboot.pc
 %{_pkgconfigdir}/efivar.pc
 %{_mandir}/man3/efi_*.3*
 
 %if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
+%{_libdir}/libefiboot.a
 %{_libdir}/libefivar.a
 %endif
