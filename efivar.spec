@@ -5,13 +5,13 @@
 Summary:	Tools to manage UEFI variables
 Summary(pl.UTF-8):	Narzędzia do zarządzania zmiennymi UEFI
 Name:		efivar
-Version:	0.20
+Version:	0.21
 Release:	1
 License:	LGPL v2.1
 Group:		Applications/System
 Source0:	https://github.com/rhinstaller/efivar/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	2982f1e1df35f214c17288137f15312f
-Patch0:		%{name}-link.patch
+# Source0-md5:	9b2bc790c267614b46b9c9c6528629d6
+Patch0:		%{name}-build.patch
 URL:		https://github.com/rhinstaller/efivar
 BuildRequires:	popt-devel
 Requires:	%{name}-libs = %{version}-%{release}
@@ -88,7 +88,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README
+%doc README.md TODO
 %attr(755,root,root) %{_bindir}/efivar
 %{_mandir}/man1/efivar.1*
 

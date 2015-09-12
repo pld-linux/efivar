@@ -1,0 +1,11 @@
+--- efivar-0.21/src/linux.c.orig	2015-07-13 22:00:06.000000000 +0200
++++ efivar-0.21/src/linux.c	2015-09-11 23:12:37.823596690 +0200
+@@ -847,7 +847,7 @@
+ __attribute__((__visibility__ ("hidden")))
+ make_mac_path(uint8_t *buf, ssize_t size, const char * const ifname)
+ {
+-	struct ifreq ifr = { 0, };
++	struct ifreq ifr = { { { 0 } }, };
+ 	struct ethtool_drvinfo drvinfo = { 0, };
+ 	int fd, rc;
+ 	ssize_t ret = -1, sz, off=0;
