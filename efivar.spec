@@ -12,6 +12,7 @@ Group:		Applications/System
 Source0:	https://github.com/rhinstaller/efivar/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	9b2bc790c267614b46b9c9c6528629d6
 Patch0:		%{name}-build.patch
+Patch1:		%{name}-static.patch
 URL:		https://github.com/rhinstaller/efivar
 BuildRequires:	popt-devel
 Requires:	%{name}-libs = %{version}-%{release}
@@ -64,12 +65,13 @@ Statyczna biblioteka efivar.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__make} \
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags}" \
-	%{?with_static_libs:LIBTARGETS="libefivar.so.0 libefiboot.so.0 libefivar.a libefiboot.a"} \
+	%{!?with_static_libs:STATICLIBTARGETS=} \
 	libdir=%{_libdir}
 
 %install
@@ -77,7 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	%{?with_static_libs:LIBTARGETS="libefivar.so.0 libefiboot.so.0 libefivar.a libefiboot.a"} \
+	%{!?with_static_libs:STATICLIBTARGETS=} \
 	libdir=%{_libdir}
 
 %clean
@@ -94,8 +96,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libefiboot.so.0
-%attr(755,root,root) %{_libdir}/libefivar.so.0
+%attr(755,root,root) %{_libdir}/libefiboot.so.0.*
+%attr(755,root,root) %ghost %{_libdir}/libefiboot.so.0
+%attr(755,root,root) %{_libdir}/libefivar.so.0.*
+%attr(755,root,root) %ghost %{_libdir}/libefivar.so.0
 
 %files devel
 %defattr(644,root,root,755)
