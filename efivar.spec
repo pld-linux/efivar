@@ -1,20 +1,27 @@
 #
 # Conditional build:
-%bcond_without	static_libs	# don't build static libraries
+%bcond_without	static		# efivar-static binary (static version of efivar)
+%bcond_without	static_libs	# static libraries
 #
 Summary:	Tools to manage UEFI variables
 Summary(pl.UTF-8):	Narzędzia do zarządzania zmiennymi UEFI
 Name:		efivar
-Version:	0.21
+Version:	0.23
 Release:	1
 License:	LGPL v2.1
 Group:		Applications/System
-Source0:	https://github.com/rhinstaller/efivar/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	9b2bc790c267614b46b9c9c6528629d6
+#Source0Download: https://github.com/rhinstaller/efivar/releases
+Source0:	https://github.com/rhinstaller/efivar/releases/download/%{version}/%{name}-%{version}.tar.bz2
+# Source0-md5:	bff7aa95fdb2f5d79f4aa9721dca2bbd
 Patch0:		%{name}-build.patch
 Patch1:		%{name}-static.patch
 URL:		https://github.com/rhinstaller/efivar
+BuildRequires:	linux-libc-headers >= 7:3.3
 BuildRequires:	popt-devel
+%if %{with static}
+BuildRequires:	glibc-static
+BuildRequires:	popt-static
+%endif
 Requires:	%{name}-libs = %{version}-%{release}
 # Beside (U)EFI architectures, additionally allow x32 userspace for x86_64 boot arch
 ExclusiveArch:	%{ix86} %{x8664} x32 arm aarch64 ia64
@@ -68,9 +75,10 @@ Statyczna biblioteka efivar.
 %patch1 -p1
 
 %build
-%{__make} \
+%{__make} -j1 \
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags}" \
+	%{!?with_static:BINTARGETS=efivar} \
 	%{!?with_static_libs:STATICLIBTARGETS=} \
 	libdir=%{_libdir}
 
@@ -79,6 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
+	%{!?with_static:BINTARGETS=efivar} \
 	%{!?with_static_libs:STATICLIBTARGETS=} \
 	libdir=%{_libdir}
 
@@ -92,6 +101,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.md TODO
 %attr(755,root,root) %{_bindir}/efivar
+%if %{with static}
+%attr(755,root,root) %{_bindir}/efivar-static
+%endif
 %{_mandir}/man1/efivar.1*
 
 %files libs

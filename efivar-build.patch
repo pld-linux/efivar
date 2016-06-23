@@ -1,11 +1,25 @@
---- efivar-0.21/src/linux.c.orig	2015-07-13 22:00:06.000000000 +0200
-+++ efivar-0.21/src/linux.c	2015-09-11 23:12:37.823596690 +0200
-@@ -847,7 +847,7 @@
- __attribute__((__visibility__ ("hidden")))
- make_mac_path(uint8_t *buf, ssize_t size, const char * const ifname)
- {
--	struct ifreq ifr = { 0, };
-+	struct ifreq ifr = { { { 0 } }, };
- 	struct ethtool_drvinfo drvinfo = { 0, };
- 	int fd, rc;
- 	ssize_t ret = -1, sz, off=0;
+--- efivar-0.23/src/linux.c.orig	2016-06-23 20:56:40.006600643 +0200
++++ efivar-0.23/src/linux.c	2016-06-23 20:56:49.526548896 +0200
+@@ -22,7 +22,12 @@
+ #include <inttypes.h>
+ #include <limits.h>
+ #include <linux/ethtool.h>
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 4, 0)
++#include <linux/nvme_ioctl.h>
++#else
+ #include <linux/nvme.h>
++#endif
+ #include <linux/sockios.h>
+ #include <net/if.h>
+ #include <scsi/scsi.h>
+--- efivar-0.23/src/Makefile.orig	2016-06-23 21:04:59.510561274 +0200
++++ efivar-0.23/src/Makefile	2016-06-23 21:08:25.262779936 +0200
+@@ -60,6 +60,7 @@
+ libefiboot.a : $(patsubst %.o,%.static.o,$(LIBEFIBOOT_OBJECTS))
+ 
+ libefiboot.so : $(LIBEFIBOOT_OBJECTS)
++libefiboot.so : LIBS=efivar
+ 
+ deps :: $(ALL_SOURCES)
+ 	$(MAKE) -f $(SRCDIR)/Make.deps deps SOURCES="$(ALL_SOURCES)"
