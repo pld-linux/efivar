@@ -7,7 +7,7 @@ Summary:	Tools to manage UEFI variables
 Summary(pl.UTF-8):	Narzędzia do zarządzania zmiennymi UEFI
 Name:		efivar
 Version:	31
-Release:	1
+Release:	2
 License:	LGPL v2.1
 Group:		Applications/System
 #Source0Download: https://github.com/rhinstaller/efivar/releases
