@@ -7,7 +7,7 @@ Summary:	Tools to manage UEFI variables
 Summary(pl.UTF-8):	Narzędzia do zarządzania zmiennymi UEFI
 Name:		efivar
 Version:	36
-Release:	1
+Release:	2
 License:	LGPL v2.1
 Group:		Applications/System
 #Source0Download: https://github.com/rhinstaller/efivar/releases
@@ -79,7 +79,7 @@ Statyczna biblioteka efivar.
 	LDFLAGS="%{rpmldflags} -Wl,-z,muldefs" \
 	%{!?with_static:STATICBINTARGETS=} \
 	%{!?with_static_libs:STATICLIBTARGETS=} \
-	libdir=%{_libdir}
+	LIBDIR=%{_libdir}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -88,7 +88,7 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT \
 	%{!?with_static:STATICBINTARGETS=} \
 	%{!?with_static_libs:STATICLIBTARGETS=} \
-	libdir=%{_libdir}
+	LIBDIR=%{_libdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
