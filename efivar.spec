@@ -73,9 +73,14 @@ Statyczna biblioteka efivar.
 %patch0 -p1
 
 %build
+%if "%{cc_version}" >= "9"
+WFLAGS=-Wno-address-of-packed-member
+%else
+WFLAGS=
+%endif
 %{__make} -j1 all static \
 	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags}" \
+	CFLAGS="%{rpmcflags} $WFLAGS" \
 	LDFLAGS="%{rpmldflags} -Wl,-z,muldefs" \
 	%{!?with_static:STATICBINTARGETS=} \
 	%{!?with_static_libs:STATICLIBTARGETS=} \
