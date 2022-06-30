@@ -1,0 +1,10 @@
+--- efivar-38/src/Makefile.orig	2022-06-30 19:48:47.290249983 +0200
++++ efivar-38/src/Makefile	2022-06-30 21:20:10.960542390 +0200
+@@ -114,6 +114,7 @@ libefisec.a : $(patsubst %.o,%.static.o,
+ 
+ libefisec.so : $(LIBEFISEC_OBJECTS)
+ libefisec.so : | libefisec.map
++libefisec.so : LIBS=efivar
+ libefisec.so : MAP=libefisec.map
+ 
+ efisecdb : $(EFISECDB_OBJECTS) | libefisec.so

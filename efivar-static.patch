@@ -1,6 +1,6 @@
---- efivar-36/src/Makefile.orig	2018-10-16 20:54:52.522433949 +0200
-+++ efivar-36/src/Makefile	2018-10-16 20:57:31.875765467 +0200
-@@ -100,12 +100,14 @@
+--- efivar-38/src/Makefile.orig	2018-10-16 20:54:52.522433949 +0200
++++ efivar-38/src/Makefile	2018-10-16 20:57:31.875765467 +0200
+@@ -146,12 +146,14 @@ install : all
  		ln -fs $(x).1.$(VERSION) $(DESTDIR)$(LIBDIR)/$(x).1 ;\
  		ln -fs $(x).1.$(VERSION) $(DESTDIR)$(LIBDIR)/$(x) ;\
  		)
@@ -8,9 +8,9 @@
  	$(INSTALL) -d -m 755 $(DESTDIR)$(PCDIR)
  	$(foreach x, $(PCTARGETS), $(INSTALL) -m 644 $(x) $(DESTDIR)$(PCDIR) ;)
  	$(INSTALL) -d -m 755 $(DESTDIR)$(INCLUDEDIR)/efivar
- 	$(foreach x, $(wildcard $(TOPDIR)/src/include/efivar/*.h), $(INSTALL) -m 644 $(x) $(DESTDIR)$(INCLUDEDIR)/efivar/$(notdir $(x));)
+ 	$(foreach x, $(sort $(wildcard $(TOPDIR)/src/include/efivar/*.h)), $(INSTALL) -m 644 $(x) $(DESTDIR)$(INCLUDEDIR)/efivar/$(notdir $(x));)
  	$(INSTALL) -d -m 755 $(DESTDIR)$(BINDIR)
- 	$(foreach x, $(BINTARGETS), $(INSTALL) -m 755 $(x) $(DESTDIR)$(BINDIR);)
+ 	$(foreach x, $(filter-out %-test,$(BINTARGETS)), $(INSTALL) -m 755 $(x) $(DESTDIR)$(BINDIR);)
 +	$(foreach x, $(STATICBINTARGETS), $(INSTALL) -m 755 $(x) $(DESTDIR)$(BINDIR);)
  
  test : all

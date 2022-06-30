@@ -6,16 +6,18 @@
 Summary:	Tools to manage UEFI variables
 Summary(pl.UTF-8):	Narzędzia do zarządzania zmiennymi UEFI
 Name:		efivar
-Version:	37
+Version:	38
 Release:	1
 License:	LGPL v2.1
 Group:		Applications/System
 #Source0Download: https://github.com/rhinstaller/efivar/releases
 Source0:	https://github.com/rhinstaller/efivar/releases/download/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	9f067275c5f7aafdd75bfb364280ac9c
+# Source0-md5:	243fdbc48440212695cb9c6e6fd0f44f
 Patch0:		%{name}-static.patch
+Patch1:		%{name}-link.patch
 URL:		https://github.com/rhinstaller/efivar
 BuildRequires:	linux-libc-headers >= 7:3.3
+BuildRequires:	mandoc
 BuildRequires:	popt-devel
 %if %{with static}
 BuildRequires:	glibc-static
@@ -71,6 +73,7 @@ Statyczna biblioteka efivar.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %if "%{cc_version}" >= "9"
@@ -104,25 +107,31 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README.md TODO
+%attr(755,root,root) %{_bindir}/efisecdb
 %attr(755,root,root) %{_bindir}/efivar
 %if %{with static}
 %attr(755,root,root) %{_bindir}/efivar-static
 %endif
+%{_mandir}/man1/efisecdb.1*
 %{_mandir}/man1/efivar.1*
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libefiboot.so.1.*
 %attr(755,root,root) %ghost %{_libdir}/libefiboot.so.1
+%attr(755,root,root) %{_libdir}/libefisec.so.1.*
+%attr(755,root,root) %ghost %{_libdir}/libefisec.so.1
 %attr(755,root,root) %{_libdir}/libefivar.so.1.*
 %attr(755,root,root) %ghost %{_libdir}/libefivar.so.1
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libefiboot.so
+%attr(755,root,root) %{_libdir}/libefisec.so
 %attr(755,root,root) %{_libdir}/libefivar.so
 %{_includedir}/efivar
 %{_pkgconfigdir}/efiboot.pc
+%{_pkgconfigdir}/efisec.pc
 %{_pkgconfigdir}/efivar.pc
 %{_mandir}/man3/efi_*.3*
 
@@ -130,5 +139,6 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libefiboot.a
+%{_libdir}/libefisec.a
 %{_libdir}/libefivar.a
 %endif
