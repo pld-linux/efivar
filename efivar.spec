@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_without	static		# efivar-static binary (static version of efivar)
+%bcond_with	static		# efivar-static binary (static version of efivar; broken as of 38)
 %bcond_without	static_libs	# static libraries
 #
 Summary:	Tools to manage UEFI variables
@@ -76,11 +76,6 @@ Statyczna biblioteka efivar.
 %patch1 -p1
 
 %build
-%if "%{cc_version}" >= "9"
-WFLAGS=-Wno-address-of-packed-member
-%else
-WFLAGS=
-%endif
 %{__make} -j1 all static \
 	CC="%{__cc}" \
 	CFLAGS="%{rpmcflags} $WFLAGS" \
